@@ -1,0 +1,1130 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>蒜了 - 蒜心自制童趣菜谱</title>
+    
+    <!-- SheetJS for client-side Excel/XLSX file parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              vibeBg: '#f1f1e3',
+              vibeBtn: '#d5d5ab',
+              vibeSidebar: '#ece7db',
+              vibeLeftSelected: '#d6ccb7',
+              vibeRightSelected: '#b5cad9',
+              vibeTextDark: '#4a4a3a',
+              vibeBorder: '#8c8c6f'
+            },
+            fontFamily: {
+              sans: ['Source Han Serif', 'Noto Serif SC', 'Georgia', 'serif'],
+              dish: ['Source Han Serif', 'Noto Serif SC', 'serif'],
+              cute: ['ZCOOL KuaiLe', 'cursive', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+    
+    <style>
+      @font-face {
+        font-family: 'Source Han Serif';
+        src: url('SourceHanSerif.otf') format('opentype');
+        font-weight: normal;
+        font-style: normal;
+      }
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap');
+
+      body {
+        font-family: 'Source Han Serif', 'Noto Serif SC', serif;
+        background-color: #e5e5d3; /* Outer background */
+      }
+
+      /* Custom Doodle/Hand-drawn Styles - Ultra Soft & Round */
+      .border-doodle {
+        border: 3.5px solid #8c8c6f;
+        border-radius: 40px 35px 45px 30px / 35px 45px 30px 40px;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.42, 1.45), box-shadow 0.3s ease, background-color 0.2s ease;
+      }
+      .border-doodle-sm {
+        border: 2.5px solid #8c8c6f;
+        border-radius: 20px 16px 22px 18px / 18px 22px 16px 20px;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.42, 1.45), box-shadow 0.3s ease, background-color 0.2s ease;
+      }
+      .shadow-doodle {
+        box-shadow: 4px 6px 0px #8c8c6f;
+      }
+      .shadow-doodle-sm {
+        box-shadow: 2.5px 3.5px 0px #8c8c6f;
+      }
+
+      /* Bouncy Hover & Active Effects for Meaty, Squishy Feel */
+      .border-doodle:hover, .border-doodle-sm:hover, .category-btn:hover, .tag-btn:hover, .dimension-btn:hover, .recipe-cart-item:hover {
+        transform: scale(1.03) translateY(-1.5px);
+      }
+      .border-doodle:active, .border-doodle-sm:active, .category-btn:active, .tag-btn:active, .dimension-btn:active, .recipe-cart-item:active {
+        transform: scale(0.96) translateY(1px);
+        box-shadow: 1px 1.5px 0px #8c8c6f !important;
+      }
+
+      /* Specific over-rides to soften persistent categories and lists */
+      .category-btn {
+        border-radius: 22px 18px 24px 20px / 20px 24px 18px 22px !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.42, 1.45) !important;
+      }
+      .recipe-cart-item {
+        border-radius: 18px 15px 20px 14px / 15px 20px 14px 18px !important;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.42, 1.45) !important;
+      }
+      #toast-container > div {
+        border-radius: 24px 20px 22px 18px / 20px 22px 18px 24px !important;
+      }
+      #cart-popup {
+        border-radius: 28px 28px 8px 28px / 28px 28px 8px 28px !important;
+      }
+      
+      /* Penguin Claypot Keyframes & Animations */
+      @keyframes jitter {
+        0% { transform: translate(0, 0) scale(1); }
+        20% { transform: translate(-2px, 1px) scale(0.98); }
+        40% { transform: translate(1px, -1.5px) scale(1.02); }
+        60% { transform: translate(-1.5px, 2px) scale(0.97); }
+        80% { transform: translate(2px, -1px) scale(1.03); }
+        100% { transform: translate(0, 0) scale(1); }
+      }
+      .animate-jitter {
+        animation: jitter 0.16s infinite ease-in-out;
+      }
+
+      @keyframes float-smoke {
+        0% {
+          transform: translate(-50%, 15px) scale(0.4);
+          opacity: 0;
+        }
+        20% {
+          opacity: 0.8;
+        }
+        80% {
+          opacity: 0.3;
+        }
+        100% {
+          transform: translate(-30%, -85px) scale(1.4);
+          opacity: 0;
+        }
+      }
+      .animate-smoke {
+        animation: float-smoke 3.2s infinite ease-out;
+      }
+
+      @keyframes star-glow {
+        0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+        50% { transform: scale(1.25) rotate(15deg); opacity: 1; filter: drop-shadow(0 0 5px rgba(234, 179, 8, 0.7)); }
+      }
+      .animate-star-glow {
+        animation: star-glow 1.8s infinite ease-in-out;
+      }
+
+      /* Transitions and animations */
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .fade-in {
+        animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+
+      /* Custom scrollbars */
+      .custom-scroll::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      .custom-scroll::-webkit-scrollbar-track {
+        background: #f1f1e3;
+        border-radius: 10px;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: #d5d5ab;
+        border: 1.5px solid #8c8c6f;
+        border-radius: 10px;
+      }
+
+      /* Dynamic selection indicator transition */
+      .category-btn.active .nav-fire-container {
+        display: block;
+      }
+
+      .tag-btn, .dimension-btn {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.42, 1.45);
+      }
+    </style>
+  </head>
+  <body class="flex justify-center items-center min-h-screen text-vibeTextDark">
+    
+    <!-- Mobile frame container -->
+    <div class="w-full max-w-md h-screen md:h-[844px] md:rounded-[36px] md:border-8 md:border-vibeBorder md:shadow-2xl bg-vibeBg relative overflow-hidden flex flex-col">
+      
+      <!-- Screen 1: Home Page / Random Recommendation -->
+      <div id="home-screen" class="flex-1 flex flex-col justify-between py-8 px-6 relative fade-in">
+        
+        <!-- Top bar with update button -->
+        <div class="flex justify-between items-center w-full">
+          <div class="flex items-center gap-1.5">
+            <span class="text-2xl">🧄</span>
+            <h1 class="font-cute text-2xl tracking-wide">蒜了！</h1>
+          </div>
+          <div>
+            <button onclick="triggerFileSelect()" class="px-3.5 py-1.5 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-xs text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all flex items-center gap-1 cursor-pointer">
+              <span>📝</span> 更新数据
+            </button>
+            <input type="file" id="file-uploader" accept=".xlsx, .csv" class="hidden" onchange="handleFileUpload(event)">
+          </div>
+        </div>
+
+        <!-- Middle: Random Recommend Card -->
+        <div class="flex flex-col items-center justify-center space-y-6 my-auto">
+          <div class="bg-white border-doodle shadow-doodle p-6 max-w-[280px] w-full text-center relative">
+            <div class="text-xs text-[#8c8c6f] font-mono tracking-widest uppercase mb-1">⭐ 今日吃点啥 ⭐</div>
+            <div id="recommend-dish-name" class="font-dish text-2xl text-vibeTextDark my-3.5 leading-relaxed">加载中...</div>
+            <div id="recommend-ingredients" class="text-xs text-gray-400 font-sans truncate px-4"></div>
+            
+            <!-- Quick Add to pot button -->
+            <button onclick="addRecommendedToCart()" class="absolute -bottom-3 -right-3 w-10 h-10 bg-vibeBtn hover:bg-[#c3c396] text-vibeTextDark font-bold rounded-full border-2 border-vibeBorder flex items-center justify-center text-lg shadow-md hover:scale-110 active:scale-95 transition-all cursor-pointer">
+              ➕
+            </button>
+          </div>
+          
+          <button onclick="shakeRecommendation()" class="px-6 py-2.5 bg-vibeBtn border-doodle shadow-doodle text-vibeTextDark font-cute text-base active:translate-y-0.5 active:shadow-none transition-all flex items-center gap-2 cursor-pointer">
+            换一个 🔄
+          </button>
+        </div>
+
+        <!-- Bottom: Interactive Penguin Claypot Component -->
+        <div class="flex flex-col items-center justify-center pb-4 select-none">
+          <p class="font-cute text-sm text-[#8c8c6f] mb-3.5 animate-pulse">点击砂锅开始选菜吧 🍲</p>
+          
+          <!-- Claypot interactive structure -->
+          <div id="home-pot-container" onclick="transitionToApp()" class="relative cursor-pointer w-56 h-56 flex flex-col justify-end items-center group">
+            
+            <!-- Smoke Layer (rising up) -->
+            <div class="absolute" style="top: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; z-index: 10;">
+              <!-- Rising smoke particles (rely on relative image) -->
+              <img src="smoke.png" class="absolute inset-0 w-full h-full object-contain animate-smoke pointer-events-none" onerror="this.style.display='none'; document.getElementById('smoke-fallback-1').classList.remove('hidden')">
+              <img src="smoke.png" class="absolute inset-0 w-full h-full object-contain animate-smoke pointer-events-none" style="animation-delay: 1.6s;" onerror="this.style.display='none'; document.getElementById('smoke-fallback-2').classList.remove('hidden')">
+              
+              <!-- Fallback pure css/emoji smoke if PNG doesn't exist -->
+              <div id="smoke-fallback-1" class="hidden absolute inset-0 text-3xl animate-smoke text-center">💭</div>
+              <div id="smoke-fallback-2" class="hidden absolute inset-0 text-2xl animate-smoke text-center" style="animation-delay: 1.6s;">💭</div>
+            </div>
+
+            <!-- Claypot/Pot Layer -->
+            <div class="relative w-44 h-44 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 z-20">
+              <img src="pot.png" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('pot-fallback').classList.remove('hidden')">
+              
+              <!-- Fallback Claypot Penguin if PNG does not exist -->
+              <div id="pot-fallback" class="hidden w-40 h-40 flex flex-col items-center justify-center bg-vibeBtn border-4 border-dashed border-vibeBorder rounded-full shadow-lg p-3">
+                <span class="text-6xl animate-bounce mb-1">🐧🍲</span>
+                <span class="font-cute text-sm text-[#6a6a55]">蒜心砂锅</span>
+              </div>
+            </div>
+
+            <!-- Jittering Fire Layer (at the bottom) -->
+            <div class="absolute" style="bottom: -10px; left: 50%; transform: translateX(-50%); width: 140px; height: 50px; z-index: 5;">
+              <img src="fire.png" class="w-full h-full object-contain animate-jitter" onerror="this.style.display='none'; document.getElementById('fire-fallback').classList.remove('hidden')">
+              
+              <!-- Fallback flame icons if PNG does not exist -->
+              <div id="fire-fallback" class="hidden flex justify-center space-x-2 text-2xl animate-jitter">
+                <span>🔥</span><span>🔥</span><span>🔥</span>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+      <!-- Screen 2: App Core Screen -->
+      <div id="app-screen" class="hidden flex-1 flex flex-col h-full fade-in">
+        
+        <!-- Top Tab Selection Navbar (Horizontal category tabs) -->
+        <div class="bg-vibeBg border-b-2 border-vibeBorder shrink-0">
+          <div class="flex items-center justify-between py-2 px-3 overflow-x-auto custom-scroll space-x-1">
+            
+            <!-- Category buttons with active states -->
+            <button onclick="selectCategory('鸡')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="鸡">
+              <span class="text-2xl select-none">🐥</span>
+              <span class="text-[11px] font-cute mt-0.5">鸡</span>
+              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+              </div>
+            </button>
+            
+            <button onclick="selectCategory('猪')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="猪">
+              <span class="text-2xl select-none">🐷</span>
+              <span class="text-[11px] font-cute mt-0.5">猪</span>
+              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+              </div>
+            </button>
+            
+            <button onclick="selectCategory('牛')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="牛">
+              <span class="text-2xl select-none">🐂</span>
+              <span class="text-[11px] font-cute mt-0.5">牛</span>
+              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+              </div>
+            </button>
+            
+            <button onclick="selectCategory('水产')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="水产">
+              <span class="text-2xl select-none">🐟</span>
+              <span class="text-[11px] font-cute mt-0.5">水产</span>
+              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+              </div>
+            </button>
+            
+            <button onclick="selectCategory('鸭')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="鸭">
+              <span class="text-2xl select-none">🦆</span>
+              <span class="text-[11px] font-cute mt-0.5">鸭</span>
+              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+              </div>
+            </button>
+            
+            <button onclick="selectCategory('蔬菜')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="蔬菜">
+              <span class="text-2xl select-none">🥬</span>
+              <span class="text-[11px] font-cute mt-0.5">蔬菜</span>
+              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+              </div>
+            </button>
+            
+            <button onclick="selectCategory('干货')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="干货">
+              <span class="text-2xl select-none">🏺</span>
+              <span class="text-[11px] font-cute mt-0.5">干货</span>
+              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+              </div>
+            </button>
+            
+          </div>
+        </div>
+
+        <!-- 3-Column main content area -->
+        <div class="flex-1 flex overflow-hidden relative">
+          
+          <!-- 1. Left Sidebar: Sub-tags detailed filter -->
+          <div class="w-[22%] bg-vibeSidebar border-r-2 border-vibeBorder flex flex-col justify-between py-4 px-1.5 shrink-0">
+            <div id="left-sidebar-tags" class="flex flex-col gap-2.5 overflow-y-auto custom-scroll">
+              <!-- Dynamically populated tags based on dimension -->
+            </div>
+            
+            <!-- Return button -->
+            <button onclick="backToHome()" class="w-full py-2 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-xs text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all mt-auto text-center cursor-pointer">
+              返回 ↩️
+            </button>
+          </div>
+
+          <!-- 2. Middle Content Area: Recipe List -->
+          <div class="flex-1 flex flex-col h-full bg-[#fbfbf6] overflow-hidden">
+            <!-- Filter Indicator Bar -->
+            <div class="bg-vibeBg/80 px-2.5 py-1.5 border-b-2 border-vibeBorder text-[10px] text-vibeTextDark/70 font-mono flex items-center justify-between shrink-0">
+              <span id="active-filter-indicator" class="truncate font-sans font-bold">全部菜品</span>
+              <span id="filtered-count" class="bg-vibeBtn px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-vibeBorder shrink-0 ml-1">0</span>
+            </div>
+            
+            <!-- Dynamic list -->
+            <div id="recipe-list-container" class="flex-1 overflow-y-auto custom-scroll p-2.5 space-y-2.5">
+              <!-- Cards dynamic injection -->
+            </div>
+          </div>
+
+          <!-- 3. Right Sidebar: 4 Major Dimensions -->
+          <div class="w-[22%] bg-vibeSidebar border-l-2 border-vibeBorder flex flex-col justify-between py-4 px-1.5 shrink-0 relative">
+            <!-- Background Hand-drawn Wallpaper with Fallback -->
+            <div class="absolute inset-0 pointer-events-none z-0">
+              <img src="sidebar-bg.png" class="w-full h-full object-fill opacity-25" onerror="this.style.display='none'">
+            </div>
+            
+            <!-- Dimension controls container -->
+            <div class="flex flex-col gap-3.5 z-10 relative">
+              <button onclick="selectDimension('烹饪方式')" id="dim-method" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
+                烹饪方式<br>🍳
+              </button>
+              <button onclick="selectDimension('难易程度')" id="dim-difficulty" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
+                难易程度<br>⭐
+              </button>
+              <button onclick="selectDimension('开胃菜')" id="dim-appetizer" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
+                开胃菜<br>🤤
+              </button>
+              <button onclick="selectDimension('快手菜')" id="dim-quick" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
+                快手菜<br>👍
+              </button>
+            </div>
+            
+            <!-- Back to top button -->
+            <button onclick="scrollToTop()" class="w-full py-2 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-[10px] text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all mt-auto text-center cursor-pointer z-10">
+              回到顶部 ⬆️
+            </button>
+          </div>
+          
+        </div>
+
+        <!-- Absolute Layer: Floating Claypot Cart Button & Speech Bubble pop-up -->
+        <div class="absolute bottom-4 right-4 z-40 select-none flex flex-col items-end">
+          
+          <!-- Speech Bubble Pop-up -->
+          <div id="cart-popup" class="hidden w-60 bg-white border-doodle shadow-doodle p-3.5 mb-2.5 flex flex-col max-h-[300px] fade-in relative" style="border-radius: 20px 20px 4px 20px;">
+            <div class="font-cute text-xs text-[#8c8c6f] border-b-2 border-dashed border-vibeBorder pb-1.5 mb-2 flex justify-between items-center">
+              <span>🥘 我的砂锅</span>
+              <span class="text-[9px] text-gray-400 font-sans">（长按/点击 ❌ 删除）</span>
+            </div>
+            
+            <!-- Scrollable List of dishes -->
+            <div id="cart-items-list" class="flex-1 overflow-y-auto custom-scroll space-y-1.5 pr-0.5 py-0.5 max-h-40">
+              <!-- Injected dynamically -->
+            </div>
+            
+            <!-- Cart Actions -->
+            <div class="mt-2.5 pt-2 border-t-2 border-dashed border-vibeBorder flex justify-between items-center">
+              <button onclick="clearCart()" class="px-2.5 py-1 bg-red-100 hover:bg-red-200 border-doodle-sm shadow-doodle-sm font-cute text-[10px] text-red-700 active:scale-95 transition-all cursor-pointer">
+                清空 🗑️
+              </button>
+              <button onclick="toggleCart()" class="px-2.5 py-1 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-[10px] text-vibeTextDark active:scale-95 transition-all cursor-pointer">
+                关闭 ❌
+              </button>
+            </div>
+          </div>
+
+          <!-- Floating button -->
+          <button onclick="toggleCart()" class="relative focus:outline-none cursor-pointer transform hover:scale-105 active:scale-95 transition-all duration-300">
+            
+            <!-- Shining star element (shown on unread addition) -->
+            <div id="cart-star" class="hidden absolute -top-3 -right-1.5 w-7 h-7 z-50 animate-star-glow">
+              <img src="star.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+              <span class="hidden text-xl">⭐</span>
+            </div>
+            
+            <!-- Floating pot circular capsule -->
+            <div class="w-14 h-14 rounded-full bg-vibeBtn border-doodle shadow-doodle flex items-center justify-center p-2 relative overflow-hidden">
+              <img src="pot.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+              <span class="hidden text-2xl">🍲</span>
+            </div>
+            
+            <!-- Cart size badge -->
+            <div id="cart-badge" class="absolute -top-1 -left-1 bg-red-500 text-white text-[9px] font-bold w-5 h-5 rounded-full border border-white flex items-center justify-center hidden">0</div>
+          </button>
+          
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Global Toast Alerts container -->
+    <div id="toast-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Custom Cute Confirm Dialog Modal -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black/45 z-50 flex items-center justify-center hidden pointer-events-auto">
+      <div id="confirm-box" class="bg-white p-5 border-doodle shadow-doodle max-w-xs w-[85%] text-center transform scale-95 opacity-0 transition-all duration-200" style="border-radius: 28px 18px 24px 20px / 20px 24px 18px 22px;">
+        <div id="confirm-emoji" class="text-3xl mb-2 select-none">🍲</div>
+        <div id="confirm-text" class="font-dish text-sm font-bold text-vibeTextDark mb-4 leading-relaxed">确定要执行此操作吗？</div>
+        <div class="flex gap-3 justify-center">
+          <button id="confirm-cancel-btn" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 border-doodle-sm shadow-doodle-sm font-cute text-xs text-gray-700 active:scale-95 transition-all cursor-pointer">
+            取消
+          </button>
+          <button id="confirm-ok-btn" class="px-4 py-1.5 bg-red-100 hover:bg-red-200 border-doodle-sm shadow-doodle-sm font-cute text-xs text-red-700 active:scale-95 transition-all cursor-pointer">
+            确定
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 33 Standard recipes from spreadsheet
+      const defaultRecipes = [
+        { name: "菠萝炒吊龙", ingredients: "吊龙", category: "荤", type: "牛", method: "炒", difficulty: "2", flavor: "开胃", garnish: "菠萝" },
+        { name: "香菜炒吊龙", ingredients: "吊龙", category: "荤", type: "牛", method: "炒", difficulty: "2", flavor: "开胃", garnish: "香菜" },
+        { name: "蒜心炒吊龙", ingredients: "吊龙", category: "荤", type: "牛", method: "炒", difficulty: "2", flavor: "适中", garnish: "蒜心" },
+        { name: "虫草花蒸吊龙", ingredients: "吊龙", category: "荤", type: "牛", method: "蒸", difficulty: "1", flavor: "清淡", garnish: "虫草花" },
+        { name: "藠头炒鸡胸肉", ingredients: "鸡胸肉", category: "荤", type: "鸡", method: "炒", difficulty: "2", flavor: "开胃", garnish: "藠头" },
+        { name: "小米辣炒鸡胸肉", ingredients: "鸡胸肉", category: "荤", type: "鸡", method: "炒", difficulty: "2", flavor: "开胃", garnish: "小米辣" },
+        { name: "胡萝卜炒鸡胸肉", ingredients: "鸡胸肉", category: "荤", type: "鸡", method: "炒", difficulty: "2", flavor: "适中", garnish: "胡萝卜" },
+        { name: "奥尔良煎鸡胸肉", ingredients: "鸡胸肉", category: "荤", type: "鸡", method: "煎", difficulty: "3", flavor: "油腻", garnish: "奥尔良" },
+        { name: "炒豆苗", ingredients: "豆苗", category: "素", type: "蔬菜", method: "炒", difficulty: "1", flavor: "清淡", garnish: "" },
+        { name: "上汤豆苗", ingredients: "豆苗", category: "素", type: "蔬菜", method: "上汤", difficulty: "2", flavor: "清淡", garnish: "" },
+        { name: "五花肉炒菜心干", ingredients: "菜心干", category: "素", type: "干货", method: "炒", difficulty: "2", flavor: "开胃", garnish: "五花肉" },
+        { name: "酸梅酱炖鸭翅", ingredients: "鸭翅", category: "荤", type: "鸭", method: "炖", difficulty: "3", flavor: "开胃", garnish: "酸梅酱" },
+        { name: "菠萝炒鸭", ingredients: "鸭", category: "荤", type: "鸭", method: "炒", difficulty: "3", flavor: "开胃", garnish: "菠萝" },
+        { name: "藠头炒鸭", ingredients: "鸭", category: "荤", type: "鸭", method: "炒", difficulty: "3", flavor: "开胃", garnish: "藠头" },
+        { name: "胡萝卜炖排骨", ingredients: "排骨", category: "荤", type: "猪", method: "炖", difficulty: "3", flavor: "浓烈", garnish: "胡萝卜" },
+        { name: "洋葱煎排骨", ingredients: "排骨", category: "荤", type: "猪", method: "煎", difficulty: "3", flavor: "油腻", garnish: "洋葱" },
+        { name: "蒸鸡", ingredients: "鸡", category: "荤", type: "鸡", method: "蒸", difficulty: "2", flavor: "清淡", garnish: "" },
+        { name: "虫草花蒸鸡", ingredients: "鸡", category: "荤", type: "鸡", method: "蒸", difficulty: "2", flavor: "清淡", garnish: "虫草花" },
+        { name: "五花肉炒荞苗", ingredients: "荞苗", category: "荤素", type: "蔬菜", method: "炒", difficulty: "2", flavor: "开胃", garnish: "五花肉" },
+        { name: "荞苗炒五花肉", ingredients: "五花肉", category: "荤素", type: "猪", method: "炒", difficulty: "2", flavor: "开胃", garnish: "荞苗" },
+        { name: "甜醋炖猪手", ingredients: "猪手", category: "荤", type: "猪", method: "炖", difficulty: "3", flavor: "油腻", garnish: "甜醋" },
+        { name: "蒸鸡蛋", ingredients: "鸡蛋", category: "荤", type: "鸡", method: "蒸", difficulty: "1", flavor: "清淡", garnish: "" },
+        { name: "银鱼蒸鸡蛋", ingredients: "鸡蛋", category: "荤", type: "鸡", method: "蒸", difficulty: "1", flavor: "清淡", garnish: "银鱼" },
+        { name: "洋葱焗鸡腿", ingredients: "鸡腿", category: "荤", type: "鸡", method: "焗", difficulty: "2", flavor: "浓烈", garnish: "洋葱" },
+        { name: "白灼虾", ingredients: "虾", category: "荤", type: "水产", method: "白灼", difficulty: "1", flavor: "清淡", garnish: "" },
+        { name: "蒸鲫鱼", ingredients: "鲫鱼", category: "荤", type: "水产", method: "蒸", difficulty: "1", flavor: "清淡", garnish: "" },
+        { name: "炒鱿鱼", ingredients: "鱿鱼", category: "荤", type: "水产", method: "炒", difficulty: "2", flavor: "清淡", garnish: "" },
+        { name: "白灼鱿鱼", ingredients: "鱿鱼", category: "荤", type: "水产", method: "白灼", difficulty: "1", flavor: "清淡", garnish: "" },
+        { name: "蒸鱼干", ingredients: "鱼干", category: "荤", type: "干货", method: "蒸", difficulty: "1", flavor: "开胃", garnish: "" },
+        { name: "炒花甲", ingredients: "花甲", category: "荤", type: "水产", method: "炒", difficulty: "2", flavor: "开胃", garnish: "" },
+        { name: "番茄炒蛋", ingredients: "蛋", category: "荤素", type: "鸡", method: "炒", difficulty: "1", flavor: "开胃", garnish: "番茄" },
+        { name: "辣椒煎虾滑", ingredients: "虾滑", category: "荤素", type: "水产", method: "煎", difficulty: "2", flavor: "开胃", garnish: "辣椒" },
+        { name: "辣椒煎鱼滑", ingredients: "鱼滑", category: "荤素", type: "水产", method: "煎", difficulty: "2", flavor: "开胃", garnish: "辣椒" }
+      ];
+
+      // Application states
+      let recipes = [];
+      let activeCategory = "鸡";
+      let activeDimension = null; // "烹饪方式", "难易程度", "开胃菜", "快手菜"
+      let activeSubTag = null; // Selected tag on Left Sidebar (e.g. "炒" or "3星")
+      let hasUnreadCartItems = false;
+      let currentRecommendedDish = null;
+
+      // Initialize Database on load
+      window.onload = function() {
+        initDatabase();
+        shakeRecommendation();
+        renderApp();
+      };
+
+      // Load database from localStorage or default
+      function initDatabase() {
+        const stored = localStorage.getItem('garlic_recipes');
+        if (stored) {
+          try {
+            recipes = JSON.parse(stored);
+          } catch(e) {
+            recipes = [...defaultRecipes];
+          }
+        } else {
+          recipes = [...defaultRecipes];
+          localStorage.setItem('garlic_recipes', JSON.stringify(recipes));
+        }
+      }
+
+      // Restore to Default Recipes
+      function restoreDefaults() {
+        recipes = [...defaultRecipes];
+        localStorage.setItem('garlic_recipes', JSON.stringify(recipes));
+        showToast("已恢复默认33道菜谱！", "success");
+        shakeRecommendation();
+        renderApp();
+      }
+
+      // Update Database via file uploader
+      function triggerFileSelect() {
+        document.getElementById('file-uploader').click();
+      }
+
+      function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const fileName = file.name.toLowerCase();
+        
+        if (fileName.endsWith('.xlsx')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            try {
+              const data = new Uint8Array(e.target.result);
+              const workbook = XLSX.read(data, { type: 'array' });
+              const firstSheetName = workbook.SheetNames[0];
+              const worksheet = workbook.Sheets[firstSheetName];
+              
+              const rawJson = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+              if (rawJson.length < 2) {
+                showToast("⚠️ 表格数据为空或格式不正确！", "error");
+                return;
+              }
+
+              parseAndSaveImportedData(rawJson);
+            } catch (err) {
+              console.error(err);
+              showToast("❌ 解析 Excel 失败！", "error");
+            }
+          };
+          reader.readAsArrayBuffer(file);
+        } else if (fileName.endsWith('.csv')) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            try {
+              const text = e.target.result;
+              const lines = text.split(/\r?\n/);
+              if (lines.length < 2) {
+                showToast("⚠️ CSV 数据为空！", "error");
+                return;
+              }
+
+              const rawJson = lines.map(line => parseCSVLine(line));
+              parseAndSaveImportedData(rawJson);
+            } catch (err) {
+              console.error(err);
+              showToast("❌ 解析 CSV 失败！", "error");
+            }
+          };
+          reader.readAsText(file, 'utf-8');
+        } else {
+          showToast("⚠️ 只支持 .xlsx 或 .csv 文件！", "error");
+        }
+        // reset uploader value
+        event.target.value = "";
+      }
+
+      // Simple CSV parser supporting double quotes
+      function parseCSVLine(text) {
+        const result = [];
+        let inQuotes = false;
+        let token = "";
+        for (let i = 0; i < text.length; i++) {
+          const c = text[i];
+          if (c === '"') {
+            inQuotes = !inQuotes;
+          } else if (c === ',' && !inQuotes) {
+            result.push(token);
+            token = "";
+          } else {
+            token += c;
+          }
+        }
+        result.push(token);
+        return result;
+      }
+
+      // Map headers and save parsed rows
+      function parseAndSaveImportedData(rawRows) {
+        const headers = rawRows[0].map(h => String(h || '').trim());
+        const headerMap = {
+          "菜名": "name",
+          "食材": "ingredients",
+          "类别": "category",
+          "种类": "type",
+          "烹饪方式": "method",
+          "难易程度": "difficulty",
+          "口味": "flavor",
+          "配料": "garnish"
+        };
+
+        const mappedFields = headers.map(h => headerMap[h] || null);
+        const importedRecipes = [];
+
+        for (let i = 1; i < rawRows.length; i++) {
+          const row = rawRows[i];
+          if (!row || row.length === 0 || !row[0]) continue; // Skip empty/header rows
+          
+          const recipe = {
+            name: "", ingredients: "", category: "", type: "", 
+            method: "", difficulty: "1", flavor: "适中", garnish: ""
+          };
+          
+          headers.forEach((h, idx) => {
+            const field = mappedFields[idx];
+            if (field) {
+              let val = row[idx];
+              if (val === undefined || val === null) val = "";
+              recipe[field] = String(val).trim();
+            }
+          });
+          
+          if (recipe.name) {
+            importedRecipes.push(recipe);
+          }
+        }
+
+        if (importedRecipes.length > 0) {
+          recipes = importedRecipes;
+          localStorage.setItem('garlic_recipes', JSON.stringify(recipes));
+          showToast(`🎉 成功导入 ${importedRecipes.length} 条菜谱！`, "success");
+          shakeRecommendation();
+          renderApp();
+        } else {
+          showToast("⚠️ 未解析出有效菜品！请检查表头名。", "error");
+        }
+      }
+
+
+      // --- RANDOM RECOMMENDATION CORE (SCREEN 1) ---
+      function shakeRecommendation() {
+        if (recipes.length === 0) return;
+        
+        const textEl = document.getElementById('recommend-dish-name');
+        const ingEl = document.getElementById('recommend-ingredients');
+        
+        // Simple playful "roulette spinning" look
+        let count = 0;
+        const interval = setInterval(() => {
+          const tempDish = recipes[Math.floor(Math.random() * recipes.length)];
+          textEl.innerText = tempDish.name;
+          ingEl.innerText = `主要食材：${tempDish.ingredients || '无'}`;
+          count++;
+          if (count > 6) {
+            clearInterval(interval);
+            // Final select
+            const finalDish = recipes[Math.floor(Math.random() * recipes.length)];
+            currentRecommendedDish = finalDish;
+            textEl.innerText = finalDish.name;
+            ingEl.innerText = `主要食材：${finalDish.ingredients || '无'}`;
+            
+            // Add a little bouncy scale animation to text
+            textEl.classList.remove('scale-95');
+            textEl.classList.add('scale-105', 'transition-transform');
+            setTimeout(() => textEl.classList.remove('scale-105'), 150);
+          }
+        }, 60);
+      }
+
+      function addRecommendedToCart() {
+        if (currentRecommendedDish) {
+          addToCart(currentRecommendedDish.name);
+        } else {
+          showToast("💡 还没有加载好菜品，请稍等哦！", "error");
+        }
+      }
+
+
+      // --- SCREEN TRANSITIONS ---
+      function transitionToApp() {
+        const pot = document.getElementById('home-pot-container');
+        const homeScreen = document.getElementById('home-screen');
+        const appScreen = document.getElementById('app-screen');
+        
+        // Trigger cinematic scale-zoom & fade-out
+        pot.classList.add('transition-all', 'duration-600', 'scale-[2.5]', 'opacity-0');
+        homeScreen.classList.add('transition-all', 'duration-600', 'opacity-0');
+        
+        setTimeout(() => {
+          homeScreen.classList.add('hidden');
+          appScreen.classList.remove('hidden');
+          
+          // Reset Home classes
+          pot.classList.remove('scale-[2.5]', 'opacity-0');
+          homeScreen.classList.remove('opacity-0');
+          
+          // Re-render App screen to ensure accurate lists
+          renderApp();
+        }, 600);
+      }
+
+      function backToHome() {
+        const homeScreen = document.getElementById('home-screen');
+        const appScreen = document.getElementById('app-screen');
+        
+        appScreen.classList.add('transition-all', 'duration-450', 'opacity-0');
+        
+        setTimeout(() => {
+          appScreen.classList.add('hidden');
+          appScreen.classList.remove('opacity-0');
+          homeScreen.classList.remove('hidden');
+          
+          // Refresh recommendation
+          shakeRecommendation();
+        }, 450);
+      }
+
+
+      // --- FILTERING ENGINE (SCREEN 2) ---
+      function selectCategory(category) {
+        activeCategory = category;
+        // Keep active filters if still applicable, or reset if they make zero items
+        renderApp();
+      }
+
+      function selectDimension(dimension) {
+        // Toggle if clicked already selected one
+        if (activeDimension === dimension) {
+          activeDimension = null;
+          activeSubTag = null;
+        } else {
+          activeDimension = dimension;
+          activeSubTag = null;
+        }
+        
+        renderApp();
+      }
+
+      function selectSubTag(tag) {
+        // Toggle if clicked already selected one
+        if (activeSubTag === tag) {
+          activeSubTag = null;
+        } else {
+          activeSubTag = tag;
+        }
+        
+        renderApp();
+      }
+
+      function scrollToTop() {
+        document.getElementById('recipe-list-container').scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      }
+
+
+      // --- RENDER APP LAYOUTS & FILTERS ---
+      function renderApp() {
+        // 1. Render Category tabs visual state
+        document.querySelectorAll('.category-btn').forEach(btn => {
+          const cat = btn.getAttribute('data-category');
+          if (cat === activeCategory) {
+            btn.classList.add('active', 'bg-[#ece7db]', 'border-2', 'border-vibeBorder', 'translate-y-[-2px]');
+            btn.querySelector('.nav-fire-container').classList.remove('hidden');
+          } else {
+            btn.classList.remove('active', 'bg-[#ece7db]', 'border-2', 'border-vibeBorder', 'translate-y-[-2px]');
+            btn.querySelector('.nav-fire-container').classList.add('hidden');
+          }
+        });
+
+        // 2. Render Left Sidebar Tags based on Right Sidebar Dimension
+        const leftSidebar = document.getElementById('left-sidebar-tags');
+        leftSidebar.innerHTML = '';
+        
+        if (activeDimension === "烹饪方式") {
+          const tags = [
+            { text: "炒", emoji: "🔥" },
+            { text: "蒸", emoji: "💧" },
+            { text: "煎", emoji: "🍳" },
+            { text: "焗", emoji: "🥘" },
+            { text: "炖", emoji: "🍲" },
+            { text: "白灼", emoji: "🥗" },
+            { text: "上汤", emoji: "🥣" }
+          ];
+          
+          tags.forEach(tag => {
+            const btn = document.createElement('button');
+            const isActive = activeSubTag === tag.text;
+            btn.className = `tag-btn w-full py-2 px-1 border-doodle-sm shadow-doodle-sm font-cute text-xs text-center text-vibeTextDark flex flex-col items-center gap-0.5 cursor-pointer ${isActive ? 'bg-[#d6ccb7]' : 'bg-white'}`;
+            btn.onclick = () => selectSubTag(tag.text);
+            btn.innerHTML = `<span class="text-base select-none">${tag.emoji}</span><span>${tag.text}</span>`;
+            leftSidebar.appendChild(btn);
+          });
+        } 
+        else if (activeDimension === "难易程度") {
+          const tags = [
+            { text: "3星", value: "3", emoji: "⭐⭐⭐" },
+            { text: "2星", value: "2", emoji: "⭐⭐" },
+            { text: "1星", value: "1", emoji: "⭐" }
+          ];
+          
+          tags.forEach(tag => {
+            const btn = document.createElement('button');
+            const isActive = activeSubTag === tag.value;
+            btn.className = `tag-btn w-full py-2 px-1 border-doodle-sm shadow-doodle-sm font-cute text-[10px] text-center text-vibeTextDark flex flex-col items-center gap-1 cursor-pointer ${isActive ? 'bg-[#d6ccb7]' : 'bg-white'}`;
+            btn.onclick = () => selectSubTag(tag.value);
+            btn.innerHTML = `<span class="text-xs select-none">${tag.emoji}</span><span>${tag.text}</span>`;
+            leftSidebar.appendChild(btn);
+          });
+        } 
+        else {
+          // Empty state for Appetizer / Quick dish OR when no dimension selected
+          leftSidebar.innerHTML = `
+            <div class="text-center py-8 text-[10px] text-gray-400 font-cute select-none leading-relaxed px-1">
+              🥗<br>美味配料<br>联动筛选
+            </div>
+          `;
+        }
+
+        // 3. Render Right Sidebar Dimensions Visual State
+        const dimBtns = {
+          "烹饪方式": "dim-method",
+          "难易程度": "dim-difficulty",
+          "开胃菜": "dim-appetizer",
+          "快手菜": "dim-quick"
+        };
+        
+        Object.keys(dimBtns).forEach(dim => {
+          const btn = document.getElementById(dimBtns[dim]);
+          if (activeDimension === dim) {
+            btn.classList.add('bg-[#b5cad9]');
+            btn.classList.remove('bg-white');
+          } else {
+            btn.classList.remove('bg-[#b5cad9]');
+            btn.classList.add('bg-white');
+          }
+        });
+
+        // 4. Run Core Linkage Filter Logic
+        let filtered = recipes.filter(recipe => recipe.type === activeCategory);
+        let indicatorText = `种类：${activeCategory}`;
+
+        if (activeDimension === "烹饪方式") {
+          if (activeSubTag) {
+            filtered = filtered.filter(recipe => recipe.method === activeSubTag);
+            indicatorText = `${activeCategory} ＋ ${activeSubTag}`;
+          } else {
+            indicatorText = `${activeCategory} ＋ 全部烹饪`;
+          }
+        } 
+        else if (activeDimension === "难易程度") {
+          if (activeSubTag) {
+            filtered = filtered.filter(recipe => recipe.difficulty === activeSubTag);
+            indicatorText = `${activeCategory} ＋ 难度:${activeSubTag}星`;
+          } else {
+            indicatorText = `${activeCategory} ＋ 全部难度`;
+          }
+        } 
+        else if (activeDimension === "开胃菜") {
+          filtered = filtered.filter(recipe => recipe.flavor === "开胃");
+          indicatorText = `${activeCategory} ＋ 🤤开胃菜`;
+        } 
+        else if (activeDimension === "快手菜") {
+          filtered = filtered.filter(recipe => recipe.difficulty === "1");
+          indicatorText = `${activeCategory} ＋ 👍快手菜`;
+        }
+
+        // Render Filter Indicator text
+        document.getElementById('active-filter-indicator').innerText = indicatorText;
+        document.getElementById('filtered-count').innerText = `${filtered.length} 条`;
+
+        // Render list center area
+        const listContainer = document.getElementById('recipe-list-container');
+        listContainer.innerHTML = '';
+        
+        if (filtered.length === 0) {
+          listContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-16 text-center select-none">
+              <div class="text-4xl mb-3">🍳</div>
+              <div class="font-cute text-sm text-gray-500">“蒜了”没找到匹配菜谱</div>
+              <div class="text-[10px] text-gray-400 mt-1">换换别的大分类或右侧筛选吧～</div>
+              <button onclick="restoreDefaults()" class="mt-4 px-3 py-1 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-xs text-vibeTextDark active:scale-95 transition-all">
+                恢复默认33道 🍲
+              </button>
+            </div>
+          `;
+          return;
+        }
+
+        filtered.forEach(recipe => {
+          const card = document.createElement('div');
+          card.className = "bg-white p-3.5 border-doodle-sm shadow-doodle-sm flex justify-between items-center hover:bg-[#fafaf4] transition-all";
+          
+          let starsHtml = '⭐'.repeat(parseInt(recipe.difficulty) || 1);
+          let garnishText = recipe.garnish ? `配：${recipe.garnish}` : "基础烹饪";
+
+          card.innerHTML = `
+            <div class="flex-1 pr-2">
+              <div class="font-dish text-base font-bold text-[#3a3a2a] mb-1.5">${recipe.name}</div>
+              <div class="flex flex-wrap gap-1 items-center">
+                <span class="bg-[#fcf7e8] border border-[#d3ccb0] text-[#7a7350] text-[9px] px-1.5 py-0.5 rounded-full font-mono font-bold">${recipe.ingredients}</span>
+                <span class="bg-blue-50 border border-blue-200 text-blue-700 text-[9px] px-1.5 py-0.5 rounded-full">${recipe.method}</span>
+                <span class="bg-orange-50 border border-orange-200 text-orange-700 text-[9px] px-1.5 py-0.5 rounded-full">${recipe.flavor}</span>
+                <span class="text-[9px] text-gray-400 bg-gray-50 border border-gray-200 px-1.5 py-0.5 rounded-full">${garnishText}</span>
+                <span class="text-[9px] ml-1 select-none">${starsHtml}</span>
+              </div>
+            </div>
+            <button onclick="addToCart('${recipe.name}')" class="w-8 h-8 rounded-full bg-vibeBtn hover:bg-[#c3c396] border-2 border-vibeBorder text-vibeTextDark font-bold flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-all shrink-0 cursor-pointer focus:outline-none">
+              ➕
+            </button>
+          `;
+          listContainer.appendChild(card);
+        });
+
+        // 5. Render Cart and badge
+        renderCartUI();
+      }
+
+
+      // --- CLAYPOT SHOPPING CART OPERATIONS ---
+      function getCart() {
+        const stored = localStorage.getItem('garlic_cart');
+        return stored ? JSON.parse(stored) : [];
+      }
+
+      function saveCart(cart) {
+        localStorage.setItem('garlic_cart', JSON.stringify(cart));
+        renderCartUI();
+      }
+
+      function addToCart(dishName) {
+        const cart = getCart();
+        if (cart.includes(dishName)) {
+          showToast(`🍲 “${dishName}” 已经在砂锅里啦！`);
+          return;
+        }
+        
+        cart.push(dishName);
+        saveCart(cart);
+        
+        // Trigger unread cart stars state
+        hasUnreadCartItems = true;
+        document.getElementById('cart-star').classList.remove('hidden');
+        
+        showToast(`🎉 成功添加 “${dishName}”！`, "success");
+      }
+
+      function removeFromCart(dishName) {
+        let cart = getCart();
+        cart = cart.filter(item => item !== dishName);
+        saveCart(cart);
+        showToast(`🗑️ 已从砂锅取出 “${dishName}”`);
+      }
+
+      function clearCart() {
+        showConfirm("确定要清空砂锅里的所有菜谱吗？", "🗑️", () => {
+          saveCart([]);
+          showToast("🍲 砂锅已清空！");
+          document.getElementById('cart-popup').classList.add('hidden');
+        });
+      }
+
+      function toggleCart() {
+        const popup = document.getElementById('cart-popup');
+        const isHidden = popup.classList.contains('hidden');
+        
+        if (isHidden) {
+          popup.classList.remove('hidden');
+          // Hide unread star because cart is now viewed
+          hasUnreadCartItems = false;
+          document.getElementById('cart-star').classList.add('hidden');
+        } else {
+          popup.classList.add('hidden');
+        }
+      }
+
+      // Render items list inside Speech Bubble
+      function renderCartUI() {
+        const cart = getCart();
+        const badge = document.getElementById('cart-badge');
+        
+        if (cart.length > 0) {
+          badge.innerText = cart.length;
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
+
+        const listContainer = document.getElementById('cart-items-list');
+        listContainer.innerHTML = '';
+
+        if (cart.length === 0) {
+          listContainer.innerHTML = `
+            <div class="text-center py-8 text-gray-400 text-xs select-none">
+              <div>🍲 砂锅里空空如也</div>
+              <div class="mt-1 text-[10px]">去中心列表点 ➕ 加菜吧</div>
+            </div>
+          `;
+          return;
+        }
+
+        cart.forEach(dish => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = "recipe-cart-item px-2.5 py-2 border border-vibeBorder rounded-xl bg-[#fdfdf9] text-vibeTextDark text-xs font-dish font-bold flex justify-between items-center cursor-pointer select-none shadow-sm";
+          itemDiv.innerHTML = `
+            <span class="truncate">${dish}</span>
+            <span class="text-red-500 hover:text-red-700 p-1 active:scale-90 transition-transform shrink-0 cursor-pointer" 
+                  onclick="event.stopPropagation(); triggerDishDelete('${dish}')"
+                  onmousedown="event.stopPropagation()"
+                  ontouchstart="event.stopPropagation()">❌</span>
+          `;
+
+          // Add mobile & desktop long-press support
+          let pressTimer;
+          const startPress = () => {
+            pressTimer = setTimeout(() => {
+              triggerDishDelete(dish);
+            }, 600);
+            itemDiv.classList.add('bg-red-50', 'scale-[0.98]');
+          };
+          const endPress = () => {
+            clearTimeout(pressTimer);
+            itemDiv.classList.remove('bg-red-50', 'scale-[0.98]');
+          };
+
+          itemDiv.addEventListener('mousedown', startPress);
+          itemDiv.addEventListener('mouseup', endPress);
+          itemDiv.addEventListener('mouseleave', endPress);
+          
+          itemDiv.addEventListener('touchstart', startPress, { passive: true });
+          itemDiv.addEventListener('touchend', endPress);
+          itemDiv.addEventListener('touchcancel', endPress);
+
+          listContainer.appendChild(itemDiv);
+        });
+      }
+
+      function triggerDishDelete(dish) {
+        showConfirm(`确定要从砂锅中删除 “${dish}” 吗？`, "🗑️", () => {
+          removeFromCart(dish);
+        });
+      }
+
+      // --- CUSTOM CUTE CONFIRM MODAL SYSTEM ---
+      function showConfirm(text, emoji, onConfirm) {
+        const modal = document.getElementById('confirm-modal');
+        const box = document.getElementById('confirm-box');
+        document.getElementById('confirm-text').innerText = text;
+        document.getElementById('confirm-emoji').innerText = emoji || "🍲";
+        
+        const okBtn = document.getElementById('confirm-ok-btn');
+        const cancelBtn = document.getElementById('confirm-cancel-btn');
+        
+        const closeModal = () => {
+          box.classList.add('scale-95', 'opacity-0');
+          setTimeout(() => {
+            modal.classList.add('hidden');
+          }, 150);
+        };
+        
+        okBtn.onclick = () => {
+          onConfirm();
+          closeModal();
+        };
+        
+        cancelBtn.onclick = closeModal;
+        
+        modal.classList.remove('hidden');
+        // Force reflow
+        void box.offsetWidth;
+        box.classList.remove('scale-95', 'opacity-0');
+      }
+
+
+      // --- GLOBAL TOAST SYSTEM ---
+      function showToast(message, type = "success") {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        
+        const icon = type === "success" ? "🎉" : (type === "error" ? "⚠️" : "🍲");
+        const borderCol = type === "error" ? "border-red-400" : "border-vibeBorder";
+        
+        toast.className = `flex items-center gap-2 px-4 py-2.5 bg-white border-2 ${borderCol} rounded-2xl shadow-lg transform translate-y-8 opacity-0 transition-all duration-300 pointer-events-auto`;
+        toast.innerHTML = `
+          <span class="text-base select-none">${icon}</span>
+          <span class="font-sans text-xs font-bold text-vibeTextDark">${message}</span>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Stagger entrance
+        setTimeout(() => {
+          toast.classList.remove('translate-y-8', 'opacity-0');
+        }, 15);
+        
+        // Remove after duration
+        setTimeout(() => {
+          toast.classList.add('translate-y-[-8px]', 'opacity-0');
+          setTimeout(() => {
+            toast.remove();
+          }, 300);
+        }, 2200);
+      }
+    </script>
+  </body>
+</html>
+

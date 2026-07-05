@@ -1,0 +1,6 @@
+{
+  "name": "蒜了",
+  "description": "一个童趣手绘风格的菜谱网页，适配移动端，带有随机推荐、核心联动筛选以及砂锅购物车功能。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
