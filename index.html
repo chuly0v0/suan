@@ -26,7 +26,7 @@
             fontFamily: {
               sans: ['Source Han Serif', 'Noto Serif SC', 'Georgia', 'serif'],
               dish: ['Source Han Serif', 'Noto Serif SC', 'serif'],
-              cute: ['ZCOOL KuaiLe', 'cursive', 'sans-serif']
+              cute: ['Source Han Serif', 'Noto Serif SC', 'serif']
             }
           }
         }
@@ -42,8 +42,11 @@
       }
       @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700&family=ZCOOL+KuaiLe&display=swap');
 
+      *, body, h1, h2, h3, button, span, div, p {
+        font-family: 'Source Han Serif', 'Noto Serif SC', 'Georgia', 'serif' !important;
+      }
+
       body {
-        font-family: 'Source Han Serif', 'Noto Serif SC', serif;
         background-color: #e5e5d3; /* Outer background */
       }
 
@@ -93,29 +96,26 @@
       /* Penguin Claypot Keyframes & Animations */
       @keyframes jitter {
         0% { transform: translate(0, 0) scale(1); }
-        20% { transform: translate(-2px, 1px) scale(0.98); }
-        40% { transform: translate(1px, -1.5px) scale(1.02); }
-        60% { transform: translate(-1.5px, 2px) scale(0.97); }
-        80% { transform: translate(2px, -1px) scale(1.03); }
+        20% { transform: translate(-1px, 0.5px) scale(0.99); }
+        40% { transform: translate(0.5px, -0.8px) scale(1.01); }
+        60% { transform: translate(-0.8px, 1px) scale(0.98); }
+        80% { transform: translate(1px, -0.5px) scale(1.02); }
         100% { transform: translate(0, 0) scale(1); }
       }
       .animate-jitter {
-        animation: jitter 0.16s infinite ease-in-out;
+        animation: jitter 0.7s infinite ease-in-out;
       }
 
       @keyframes float-smoke {
         0% {
-          transform: translate(-50%, 15px) scale(0.4);
+          transform: translate(0, 0) scale(0.8);
           opacity: 0;
         }
-        20% {
-          opacity: 0.8;
-        }
-        80% {
-          opacity: 0.3;
+        15% {
+          opacity: 0.95;
         }
         100% {
-          transform: translate(-30%, -85px) scale(1.4);
+          transform: translate(90px, -180px) scale(2.4);
           opacity: 0;
         }
       }
@@ -188,32 +188,32 @@
         </div>
 
         <!-- Middle: Random Recommend Card -->
-        <div class="flex flex-col items-center justify-center space-y-6 my-auto">
-          <div class="bg-white border-doodle shadow-doodle p-6 max-w-[280px] w-full text-center relative">
-            <div class="text-xs text-[#8c8c6f] font-mono tracking-widest uppercase mb-1">⭐ 今日吃点啥 ⭐</div>
-            <div id="recommend-dish-name" class="font-dish text-2xl text-vibeTextDark my-3.5 leading-relaxed">加载中...</div>
-            <div id="recommend-ingredients" class="text-xs text-gray-400 font-sans truncate px-4"></div>
+        <div class="flex flex-col items-center justify-center space-y-3.5 my-auto shrink-0">
+          <div class="bg-white border-doodle shadow-doodle py-3.5 px-5 max-w-[240px] w-full text-center relative">
+            <div class="text-[10px] text-[#8c8c6f] font-mono tracking-widest uppercase mb-0.5">⭐ 今日吃点啥 ⭐</div>
+            <div id="recommend-dish-name" class="font-dish text-xl text-vibeTextDark my-2 leading-relaxed">加载中...</div>
+            <div id="recommend-ingredients" class="text-[10px] text-gray-400 font-sans truncate px-2"></div>
             
             <!-- Quick Add to pot button -->
-            <button onclick="addRecommendedToCart()" class="absolute -bottom-3 -right-3 w-10 h-10 bg-vibeBtn hover:bg-[#c3c396] text-vibeTextDark font-bold rounded-full border-2 border-vibeBorder flex items-center justify-center text-lg shadow-md hover:scale-110 active:scale-95 transition-all cursor-pointer">
+            <button onclick="addRecommendedToCart()" class="absolute -bottom-2 -right-2 w-8 h-8 bg-vibeBtn hover:bg-[#c3c396] text-vibeTextDark font-bold rounded-full border-2 border-vibeBorder flex items-center justify-center text-sm shadow-md hover:scale-110 active:scale-95 transition-all cursor-pointer">
               ➕
             </button>
           </div>
           
-          <button onclick="shakeRecommendation()" class="px-6 py-2.5 bg-vibeBtn border-doodle shadow-doodle text-vibeTextDark font-cute text-base active:translate-y-0.5 active:shadow-none transition-all flex items-center gap-2 cursor-pointer">
+          <button onclick="shakeRecommendation()" class="px-4 py-1.5 bg-vibeBtn border-doodle shadow-doodle text-vibeTextDark font-cute text-xs active:translate-y-0.5 active:shadow-none transition-all flex items-center gap-1.5 cursor-pointer">
             换一个 🔄
           </button>
         </div>
 
         <!-- Bottom: Interactive Penguin Claypot Component -->
         <div class="flex flex-col items-center justify-center pb-4 select-none">
-          <p class="font-cute text-sm text-[#8c8c6f] mb-3.5 animate-pulse">点击砂锅开始选菜吧 🍲</p>
+          <p class="font-cute text-sm text-[#8c8c6f] mb-2 animate-pulse">点击砂锅开始选菜吧 🍲</p>
           
           <!-- Claypot interactive structure -->
-          <div id="home-pot-container" onclick="transitionToApp()" class="relative cursor-pointer w-56 h-56 flex flex-col justify-end items-center group">
+          <div id="home-pot-container" onclick="transitionToApp()" class="relative cursor-pointer w-[300px] h-[300px] flex flex-col justify-end items-center group">
             
-            <!-- Smoke Layer (rising up) -->
-            <div class="absolute" style="top: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 80px; z-index: 10;">
+            <!-- Smoke Layer (rising up from mouth) -->
+            <div class="absolute" style="top: 38%; left: 51%; width: 70px; height: 70px; z-index: 10; pointer-events: none;">
               <!-- Rising smoke particles (rely on relative image) -->
               <img src="smoke.png" class="absolute inset-0 w-full h-full object-contain animate-smoke pointer-events-none" onerror="this.style.display='none'; document.getElementById('smoke-fallback-1').classList.remove('hidden')">
               <img src="smoke.png" class="absolute inset-0 w-full h-full object-contain animate-smoke pointer-events-none" style="animation-delay: 1.6s;" onerror="this.style.display='none'; document.getElementById('smoke-fallback-2').classList.remove('hidden')">
@@ -224,18 +224,18 @@
             </div>
 
             <!-- Claypot/Pot Layer -->
-            <div class="relative w-44 h-44 flex items-center justify-center group-hover:scale-105 transition-transform duration-300 z-20">
+            <div class="relative w-[270px] h-[270px] flex items-center justify-center group-hover:scale-105 transition-transform duration-300 z-20">
               <img src="pot.png" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('pot-fallback').classList.remove('hidden')">
               
               <!-- Fallback Claypot Penguin if PNG does not exist -->
-              <div id="pot-fallback" class="hidden w-40 h-40 flex flex-col items-center justify-center bg-vibeBtn border-4 border-dashed border-vibeBorder rounded-full shadow-lg p-3">
+              <div id="pot-fallback" class="hidden w-[240px] h-[240px] flex flex-col items-center justify-center bg-vibeBtn border-4 border-dashed border-vibeBorder rounded-full shadow-lg p-3">
                 <span class="text-6xl animate-bounce mb-1">🐧🍲</span>
                 <span class="font-cute text-sm text-[#6a6a55]">蒜心砂锅</span>
               </div>
             </div>
 
             <!-- Jittering Fire Layer (at the bottom) -->
-            <div class="absolute" style="bottom: -10px; left: 50%; transform: translateX(-50%); width: 140px; height: 50px; z-index: 5;">
+            <div class="absolute" style="bottom: 12px; left: 50%; transform: translateX(-50%) scale(2.8); width: 120px; height: 40px; z-index: 5;">
               <img src="fire.png" class="w-full h-full object-contain animate-jitter" onerror="this.style.display='none'; document.getElementById('fire-fallback').classList.remove('hidden')">
               
               <!-- Fallback flame icons if PNG does not exist -->
@@ -259,63 +259,63 @@
             <button onclick="selectCategory('鸡')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="鸡">
               <span class="text-2xl select-none">🐥</span>
               <span class="text-[11px] font-cute mt-0.5">鸡</span>
-              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+              <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
                 <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+                <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
             
             <button onclick="selectCategory('猪')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="猪">
               <span class="text-2xl select-none">🐷</span>
               <span class="text-[11px] font-cute mt-0.5">猪</span>
-              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+              <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
                 <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+                <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
             
             <button onclick="selectCategory('牛')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="牛">
               <span class="text-2xl select-none">🐂</span>
               <span class="text-[11px] font-cute mt-0.5">牛</span>
-              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+              <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
                 <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+                <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
             
             <button onclick="selectCategory('水产')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="水产">
               <span class="text-2xl select-none">🐟</span>
               <span class="text-[11px] font-cute mt-0.5">水产</span>
-              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+              <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
                 <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+                <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
             
             <button onclick="selectCategory('鸭')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="鸭">
               <span class="text-2xl select-none">🦆</span>
               <span class="text-[11px] font-cute mt-0.5">鸭</span>
-              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+              <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
                 <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+                <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
             
             <button onclick="selectCategory('蔬菜')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="蔬菜">
               <span class="text-2xl select-none">🥬</span>
               <span class="text-[11px] font-cute mt-0.5">蔬菜</span>
-              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+              <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
                 <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+                <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
             
             <button onclick="selectCategory('干货')" class="category-btn flex flex-col items-center justify-center p-1.5 min-w-[50px] relative shrink-0 transition-all rounded-xl focus:outline-none" data-category="干货">
               <span class="text-2xl select-none">🏺</span>
               <span class="text-[11px] font-cute mt-0.5">干货</span>
-              <div class="nav-fire-container absolute -bottom-1.5 left-1/2 transform -translate-x-1/2 w-5 h-3.5 hidden">
+              <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
                 <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-                <span class="hidden text-[10px] text-orange-500 font-bold animate-pulse text-center">🔥</span>
+                <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
             
@@ -360,22 +360,22 @@
             
             <!-- Dimension controls container -->
             <div class="flex flex-col gap-3.5 z-10 relative">
-              <button onclick="selectDimension('烹饪方式')" id="dim-method" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
+              <button onclick="selectDimension('烹饪方式')" id="dim-method" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[13px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
                 烹饪方式<br>🍳
               </button>
-              <button onclick="selectDimension('难易程度')" id="dim-difficulty" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
+              <button onclick="selectDimension('难易程度')" id="dim-difficulty" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[13px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
                 难易程度<br>⭐
               </button>
-              <button onclick="selectDimension('开胃菜')" id="dim-appetizer" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
+              <button onclick="selectDimension('开胃菜')" id="dim-appetizer" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[13px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
                 开胃菜<br>🤤
               </button>
-              <button onclick="selectDimension('快手菜')" id="dim-quick" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
+              <button onclick="selectDimension('快手菜')" id="dim-quick" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[13px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
                 快手菜<br>👍
               </button>
             </div>
             
             <!-- Back to top button -->
-            <button onclick="scrollToTop()" class="w-full py-2 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-[10px] text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all mt-auto text-center cursor-pointer z-10">
+            <button onclick="scrollToTop()" class="w-full py-2 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all mt-auto text-center cursor-pointer z-10">
               回到顶部 ⬆️
             </button>
           </div>
@@ -1081,12 +1081,28 @@
           }, 150);
         };
         
-        okBtn.onclick = () => {
+        const handleOk = (e) => {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
           onConfirm();
           closeModal();
         };
         
-        cancelBtn.onclick = closeModal;
+        const handleCancel = (e) => {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          closeModal();
+        };
+        
+        okBtn.onclick = handleOk;
+        okBtn.ontouchstart = handleOk;
+        
+        cancelBtn.onclick = handleCancel;
+        cancelBtn.ontouchstart = handleCancel;
         
         modal.classList.remove('hidden');
         // Force reflow
