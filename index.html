@@ -110,35 +110,7 @@
         border-radius: 28px 28px 8px 28px / 28px 28px 8px 28px !important;
       }
       
-      /* Penguin Claypot Keyframes & Animations */
-      @keyframes jitter {
-        0% { transform: translate(0, 0) scale(1); }
-        20% { transform: translate(-1px, 0.5px) scale(0.99); }
-        40% { transform: translate(0.5px, -0.8px) scale(1.01); }
-        60% { transform: translate(-0.8px, 1px) scale(0.98); }
-        80% { transform: translate(1px, -0.5px) scale(1.02); }
-        100% { transform: translate(0, 0) scale(1); }
-      }
-      .animate-jitter {
-        animation: jitter 0.7s infinite ease-in-out;
-      }
-
-      @keyframes float-smoke {
-        0% {
-          transform: translate(0, 0) scale(0.8);
-          opacity: 0;
-        }
-        15% {
-          opacity: 0.95;
-        }
-        100% {
-          transform: translate(90px, -180px) scale(2.4);
-          opacity: 0;
-        }
-      }
-      .animate-smoke {
-        animation: float-smoke 3.2s infinite ease-out;
-      }
+      
 
       @keyframes star-glow {
         0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
@@ -227,40 +199,14 @@
           <p class="font-cute text-sm text-[#8c8c6f] mb-2 animate-pulse">点击砂锅开始选菜吧 🍲</p>
           
           <!-- Claypot interactive structure -->
-          <div id="home-pot-container" onclick="transitionToApp()" class="relative cursor-pointer w-[300px] h-[300px] flex flex-col justify-end items-center group">
+          <div id="home-pot-container" onclick="transitionToApp()" class="relative cursor-pointer w-[280px] sm:w-[320px] h-[280px] sm:h-[320px] flex items-center justify-center group">
+            <img src="penguin-pot.gif" class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105" alt="企鹅砂锅" onerror="this.style.display='none'; document.getElementById('pot-fallback').classList.remove('hidden')">
             
-            <!-- Smoke Layer (rising up from mouth) -->
-            <div class="absolute" style="top: 38%; left: 51%; width: 70px; height: 70px; z-index: 30; pointer-events: none;">
-              <!-- Rising smoke particles (rely on relative image) -->
-              <img src="smoke.png" class="absolute inset-0 w-full h-full object-contain animate-smoke pointer-events-none" onerror="this.style.display='none'; document.getElementById('smoke-fallback-1').classList.remove('hidden')">
-              <img src="smoke.png" class="absolute inset-0 w-full h-full object-contain animate-smoke pointer-events-none" style="animation-delay: 1.6s;" onerror="this.style.display='none'; document.getElementById('smoke-fallback-2').classList.remove('hidden')">
-              
-              <!-- Fallback pure css/emoji smoke if PNG doesn't exist -->
-              <div id="smoke-fallback-1" class="hidden absolute inset-0 text-3xl animate-smoke text-center">💭</div>
-              <div id="smoke-fallback-2" class="hidden absolute inset-0 text-2xl animate-smoke text-center" style="animation-delay: 1.6s;">💭</div>
+            <!-- Fallback Claypot Penguin if GIF does not exist -->
+            <div id="pot-fallback" class="hidden w-[240px] h-[240px] flex flex-col items-center justify-center bg-vibeBtn border-4 border-dashed border-vibeBorder rounded-full shadow-lg p-3">
+              <span class="text-6xl mb-1 animate-bounce">🐧🍲</span>
+              <span class="font-cute text-sm text-[#6a6a55]">蒜心砂锅</span>
             </div>
-
-            <!-- Claypot/Pot Layer -->
-            <div class="relative w-[270px] h-[270px] flex items-center justify-center group-hover:scale-105 transition-transform duration-300 z-10">
-              <img src="pot.png" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('pot-fallback').classList.remove('hidden')">
-              
-              <!-- Fallback Claypot Penguin if PNG does not exist -->
-              <div id="pot-fallback" class="hidden w-[240px] h-[240px] flex flex-col items-center justify-center bg-vibeBtn border-4 border-dashed border-vibeBorder rounded-full shadow-lg p-3">
-                <span class="text-6xl animate-bounce mb-1">🐧🍲</span>
-                <span class="font-cute text-sm text-[#6a6a55]">蒜心砂锅</span>
-              </div>
-            </div>
-
-            <!-- Jittering Fire Layer (at the bottom) -->
-            <div class="absolute" style="bottom: 102px; left: 50%; transform: translateX(-50%) scale(11.2); width: 120px; height: 40px; z-index: 5;">
-              <img src="fire.png" class="w-full h-full object-contain animate-jitter" onerror="this.style.display='none'; document.getElementById('fire-fallback').classList.remove('hidden')">
-              
-              <!-- Fallback flame icons if PNG does not exist -->
-              <div id="fire-fallback" class="hidden flex justify-center space-x-2 text-6xl animate-jitter">
-                <span>🔥</span><span>🔥</span><span>🔥</span>
-              </div>
-            </div>
-            
           </div>
         </div>
       </div>
@@ -437,10 +383,10 @@
               <span class="hidden text-5xl">⭐</span>
             </div>
             
-            <!-- Floating pot circular capsule (Scaled 3x larger than original w-14) -->
-            <div class="w-[168px] h-[168px] rounded-full bg-vibeBtn border-doodle shadow-doodle flex items-center justify-center p-4 relative overflow-hidden">
+            <!-- Floating pot (Scaled 3x larger, with background and border removed) -->
+            <div class="w-[168px] h-[168px] flex items-center justify-center relative">
               <img src="pot.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-              <span class="hidden text-5xl">🍲</span>
+              <span class="hidden text-[120px] select-none">🍲</span>
             </div>
             
             <!-- Cart size badge (Scaled proportionally) -->
