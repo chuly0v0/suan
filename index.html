@@ -68,6 +68,23 @@
         box-shadow: 2.5px 3.5px 0px #8c8c6f;
       }
 
+      /* Hand-drawn vertical/horizontal lines for page 2 dividers */
+      .doodle-border-b {
+        border-bottom: 3.5px solid #8c8c6f;
+        border-bottom-left-radius: 9px 4px;
+        border-bottom-right-radius: 4px 9px;
+      }
+      .doodle-border-r {
+        border-right: 3.5px solid #8c8c6f;
+        border-top-right-radius: 4px 9px;
+        border-bottom-right-radius: 9px 4px;
+      }
+      .doodle-border-l {
+        border-left: 3.5px solid #8c8c6f;
+        border-top-left-radius: 4px 9px;
+        border-bottom-left-radius: 9px 4px;
+      }
+
       /* Bouncy Hover & Active Effects for Meaty, Squishy Feel */
       .border-doodle:hover, .border-doodle-sm:hover, .category-btn:hover, .tag-btn:hover, .dimension-btn:hover, .recipe-cart-item:hover {
         transform: scale(1.03) translateY(-1.5px);
@@ -213,7 +230,7 @@
           <div id="home-pot-container" onclick="transitionToApp()" class="relative cursor-pointer w-[300px] h-[300px] flex flex-col justify-end items-center group">
             
             <!-- Smoke Layer (rising up from mouth) -->
-            <div class="absolute" style="top: 38%; left: 51%; width: 70px; height: 70px; z-index: 10; pointer-events: none;">
+            <div class="absolute" style="top: 38%; left: 51%; width: 70px; height: 70px; z-index: 30; pointer-events: none;">
               <!-- Rising smoke particles (rely on relative image) -->
               <img src="smoke.png" class="absolute inset-0 w-full h-full object-contain animate-smoke pointer-events-none" onerror="this.style.display='none'; document.getElementById('smoke-fallback-1').classList.remove('hidden')">
               <img src="smoke.png" class="absolute inset-0 w-full h-full object-contain animate-smoke pointer-events-none" style="animation-delay: 1.6s;" onerror="this.style.display='none'; document.getElementById('smoke-fallback-2').classList.remove('hidden')">
@@ -224,7 +241,7 @@
             </div>
 
             <!-- Claypot/Pot Layer -->
-            <div class="relative w-[270px] h-[270px] flex items-center justify-center group-hover:scale-105 transition-transform duration-300 z-20">
+            <div class="relative w-[270px] h-[270px] flex items-center justify-center group-hover:scale-105 transition-transform duration-300 z-10">
               <img src="pot.png" class="w-full h-full object-contain" onerror="this.style.display='none'; document.getElementById('pot-fallback').classList.remove('hidden')">
               
               <!-- Fallback Claypot Penguin if PNG does not exist -->
@@ -235,11 +252,11 @@
             </div>
 
             <!-- Jittering Fire Layer (at the bottom) -->
-            <div class="absolute" style="bottom: 12px; left: 50%; transform: translateX(-50%) scale(2.8); width: 120px; height: 40px; z-index: 5;">
+            <div class="absolute" style="bottom: 102px; left: 50%; transform: translateX(-50%) scale(11.2); width: 120px; height: 40px; z-index: 5;">
               <img src="fire.png" class="w-full h-full object-contain animate-jitter" onerror="this.style.display='none'; document.getElementById('fire-fallback').classList.remove('hidden')">
               
               <!-- Fallback flame icons if PNG does not exist -->
-              <div id="fire-fallback" class="hidden flex justify-center space-x-2 text-2xl animate-jitter">
+              <div id="fire-fallback" class="hidden flex justify-center space-x-2 text-6xl animate-jitter">
                 <span>🔥</span><span>🔥</span><span>🔥</span>
               </div>
             </div>
@@ -252,7 +269,7 @@
       <div id="app-screen" class="hidden flex-1 flex flex-col h-full fade-in">
         
         <!-- Top Tab Selection Navbar (Horizontal category tabs) -->
-        <div class="bg-vibeBg border-b-2 border-vibeBorder shrink-0">
+        <div class="bg-vibeBg doodle-border-b shrink-0">
           <div class="flex items-center justify-between py-2 px-3 overflow-x-auto custom-scroll space-x-1">
             
             <!-- Category buttons with active states -->
@@ -269,7 +286,7 @@
               <span class="text-2xl select-none">🐷</span>
               <span class="text-[11px] font-cute mt-0.5">猪</span>
               <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
-                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <img src="nav-fire.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
                 <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
@@ -278,7 +295,7 @@
               <span class="text-2xl select-none">🐂</span>
               <span class="text-[11px] font-cute mt-0.5">牛</span>
               <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
-                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <img src="nav-fire.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
                 <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
@@ -287,7 +304,7 @@
               <span class="text-2xl select-none">🐟</span>
               <span class="text-[11px] font-cute mt-0.5">水产</span>
               <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
-                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <img src="nav-fire.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
                 <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
@@ -296,7 +313,7 @@
               <span class="text-2xl select-none">🦆</span>
               <span class="text-[11px] font-cute mt-0.5">鸭</span>
               <div class="nav-fire-container absolute -bottom-3.5 left-1/2 transform -translate-x-1/2 w-10 h-7 hidden">
-                <img src="nav-fire.png" class="w-full h-full object-contain animate-pulse" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
+                <img src="nav-fire.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
                 <span class="hidden text-xs text-orange-500 font-bold animate-pulse text-center">🔥</span>
               </div>
             </button>
@@ -326,7 +343,7 @@
         <div class="flex-1 flex overflow-hidden relative">
           
           <!-- 1. Left Sidebar: Sub-tags detailed filter -->
-          <div class="w-[22%] bg-vibeSidebar border-r-2 border-vibeBorder flex flex-col justify-between py-4 px-1.5 shrink-0">
+          <div class="w-[22%] bg-vibeSidebar doodle-border-r flex flex-col justify-between py-4 px-1.5 shrink-0">
             <div id="left-sidebar-tags" class="flex flex-col gap-2.5 overflow-y-auto custom-scroll">
               <!-- Dynamically populated tags based on dimension -->
             </div>
@@ -340,7 +357,7 @@
           <!-- 2. Middle Content Area: Recipe List -->
           <div class="flex-1 flex flex-col h-full bg-[#fbfbf6] overflow-hidden">
             <!-- Filter Indicator Bar -->
-            <div class="bg-vibeBg/80 px-2.5 py-1.5 border-b-2 border-vibeBorder text-[10px] text-vibeTextDark/70 font-mono flex items-center justify-between shrink-0">
+            <div class="bg-vibeBg/80 px-2.5 py-1.5 doodle-border-b text-[10px] text-vibeTextDark/70 font-mono flex items-center justify-between shrink-0">
               <span id="active-filter-indicator" class="truncate font-sans font-bold">全部菜品</span>
               <span id="filtered-count" class="bg-vibeBtn px-1.5 py-0.5 rounded-full text-[9px] font-bold border border-vibeBorder shrink-0 ml-1">0</span>
             </div>
@@ -352,7 +369,7 @@
           </div>
 
           <!-- 3. Right Sidebar: 4 Major Dimensions -->
-          <div class="w-[22%] bg-vibeSidebar border-l-2 border-vibeBorder flex flex-col justify-between py-4 px-1.5 shrink-0 relative">
+          <div class="w-[22%] bg-vibeSidebar doodle-border-l flex flex-col justify-between py-4 px-1.5 shrink-0 relative">
             <!-- Background Hand-drawn Wallpaper with Fallback -->
             <div class="absolute inset-0 pointer-events-none z-0">
               <img src="sidebar-bg.png" class="w-full h-full object-fill opacity-25" onerror="this.style.display='none'">
@@ -372,12 +389,15 @@
               <button onclick="selectDimension('快手菜')" id="dim-quick" class="dimension-btn w-full py-3 px-1 bg-white border-doodle-sm shadow-doodle-sm font-cute text-[13px] text-center text-vibeTextDark hover:scale-105 active:scale-95 transition-all cursor-pointer">
                 快手菜<br>👍
               </button>
+              
+              <!-- Back to top button moved here, under Quick/快手菜 -->
+              <button onclick="scrollToTop()" class="w-full py-2 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all text-center cursor-pointer z-10 mt-1">
+                回到顶部 ⬆️
+              </button>
             </div>
             
-            <!-- Back to top button -->
-            <button onclick="scrollToTop()" class="w-full py-2 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all mt-auto text-center cursor-pointer z-10">
-              回到顶部 ⬆️
-            </button>
+            <!-- Empty spacer at bottom for clean spacing -->
+            <div class="h-8"></div>
           </div>
           
         </div>
@@ -412,19 +432,19 @@
           <button onclick="toggleCart()" class="relative focus:outline-none cursor-pointer transform hover:scale-105 active:scale-95 transition-all duration-300">
             
             <!-- Shining star element (shown on unread addition) -->
-            <div id="cart-star" class="hidden absolute -top-3 -right-1.5 w-7 h-7 z-50 animate-star-glow">
+            <div id="cart-star" class="hidden absolute -top-5 -right-2.5 w-14 h-14 z-50 animate-star-glow">
               <img src="star.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-              <span class="hidden text-xl">⭐</span>
+              <span class="hidden text-5xl">⭐</span>
             </div>
             
-            <!-- Floating pot circular capsule -->
-            <div class="w-14 h-14 rounded-full bg-vibeBtn border-doodle shadow-doodle flex items-center justify-center p-2 relative overflow-hidden">
+            <!-- Floating pot circular capsule (Scaled 3x larger than original w-14) -->
+            <div class="w-[168px] h-[168px] rounded-full bg-vibeBtn border-doodle shadow-doodle flex items-center justify-center p-4 relative overflow-hidden">
               <img src="pot.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-              <span class="hidden text-2xl">🍲</span>
+              <span class="hidden text-5xl">🍲</span>
             </div>
             
-            <!-- Cart size badge -->
-            <div id="cart-badge" class="absolute -top-1 -left-1 bg-red-500 text-white text-[9px] font-bold w-5 h-5 rounded-full border border-white flex items-center justify-center hidden">0</div>
+            <!-- Cart size badge (Scaled proportionally) -->
+            <div id="cart-badge" class="absolute -top-1 -left-1 bg-red-500 text-white text-[12px] font-bold w-8 h-8 rounded-full border border-white flex items-center justify-center hidden">0</div>
           </button>
           
         </div>
