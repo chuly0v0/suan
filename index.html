@@ -377,11 +377,8 @@
           <!-- Floating button -->
           <button onclick="toggleCart()" class="relative focus:outline-none cursor-pointer transform hover:scale-105 active:scale-95 transition-all duration-300">
             
-            <!-- Shining star element (shown on unread addition) -->
-            <div id="cart-star" class="hidden absolute -top-5 -right-2.5 w-14 h-14 z-50 animate-star-glow">
-              <img src="star.png" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden')">
-              <span class="hidden text-5xl">⭐</span>
-            </div>
+            <!-- Hidden star element to satisfy JS references without rendering -->
+            <div id="cart-star" class="hidden"></div>
             
             <!-- Floating pot (Scaled 3x larger, with background and border removed) -->
             <div class="w-[168px] h-[168px] flex items-center justify-center relative">
@@ -389,8 +386,8 @@
               <span class="hidden text-[120px] select-none">🍲</span>
             </div>
             
-            <!-- Cart size badge (Scaled proportionally) -->
-            <div id="cart-badge" class="absolute -top-1 -left-1 bg-red-500 text-white text-[12px] font-bold w-8 h-8 rounded-full border border-white flex items-center justify-center hidden">0</div>
+            <!-- Cart size badge (Scaled proportionally to top-right corner) -->
+            <div id="cart-badge" class="absolute top-1.5 right-1.5 bg-red-500 text-white text-[12px] font-bold w-8 h-8 rounded-full border border-white flex items-center justify-center hidden">0</div>
           </button>
           
         </div>
