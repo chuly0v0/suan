@@ -168,9 +168,12 @@
             <span class="text-2xl">🧄</span>
             <h1 class="font-cute text-2xl tracking-wide">蒜了！</h1>
           </div>
-          <div>
+          <div class="flex flex-col items-end gap-1.5">
             <button onclick="triggerFileSelect()" class="px-3.5 py-1.5 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-xs text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all flex items-center gap-1 cursor-pointer">
               <span>📝</span> 更新数据
+            </button>
+            <button onclick="downloadCSVTemplate()" class="px-3.5 py-1.5 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-xs text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all flex items-center gap-1 cursor-pointer">
+              <span>📥</span> 下载模板
             </button>
             <input type="file" id="file-uploader" accept=".xlsx, .csv" class="hidden" onchange="handleFileUpload(event)">
           </div>
@@ -340,6 +343,16 @@
               <button onclick="scrollToTop()" class="w-full py-2 bg-vibeBtn border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-vibeTextDark active:translate-y-0.5 active:shadow-none transition-all text-center cursor-pointer z-10 mt-1">
                 回到顶部 ⬆️
               </button>
+              
+              <!-- Add Recipe Button -->
+              <button onclick="openAddDishModal()" class="w-full py-2 bg-green-100 hover:bg-green-200 border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-green-800 active:translate-y-0.5 active:shadow-none transition-all text-center cursor-pointer z-10 mt-1">
+                增加菜品 ➕
+              </button>
+              
+              <!-- Edit/Delete Recipe Mode Toggle Button -->
+              <button onclick="toggleEditMode()" id="edit-mode-btn" class="w-full py-2 bg-amber-100 hover:bg-amber-200 border-doodle-sm shadow-doodle-sm font-cute text-[11px] text-amber-800 active:translate-y-0.5 active:shadow-none transition-all text-center cursor-pointer z-10 mt-1">
+                编辑菜品 ⚙️
+              </button>
             </div>
             
             <!-- Empty spacer at bottom for clean spacing -->
@@ -414,6 +427,80 @@
       </div>
     </div>
 
+    <!-- Add Dish Modal -->
+    <div id="add-dish-modal" class="fixed inset-0 bg-black/45 z-50 flex items-center justify-center hidden pointer-events-auto">
+      <div class="bg-white p-5 border-doodle shadow-doodle max-w-sm w-[90%] text-left transform scale-95 opacity-0 transition-all duration-200" style="border-radius: 24px 18px 24px 20px / 20px 24px 18px 22px;">
+        <div class="text-center font-dish text-base font-bold text-vibeTextDark mb-4 select-none">🍲 增加新菜品</div>
+        <form id="add-dish-form" onsubmit="saveNewDish(event)" class="space-y-3 font-cute text-xs">
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">菜名 *</label>
+            <input type="text" id="dish-name" required placeholder="如：小炒肉" class="w-full p-2 border-doodle-sm rounded bg-[#fafaf4] text-vibeTextDark focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">食材 * (主要食材)</label>
+            <input type="text" id="dish-ingredients" required placeholder="如：五花肉, 青椒" class="w-full p-2 border-doodle-sm rounded bg-[#fafaf4] text-vibeTextDark focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-gray-700 font-bold mb-1">配料 (可选)</label>
+            <input type="text" id="dish-garnish" placeholder="如：蒜头, 豆豉" class="w-full p-2 border-doodle-sm rounded bg-[#fafaf4] text-vibeTextDark focus:outline-none">
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-gray-700 font-bold mb-1">种类</label>
+              <select id="dish-type" class="w-full p-2 border-doodle-sm rounded bg-[#fafaf4] text-vibeTextDark focus:outline-none">
+                <option value="鸡">鸡 🐥</option>
+                <option value="猪">猪 🐷</option>
+                <option value="牛">牛 🐂</option>
+                <option value="水产">水产 🐟</option>
+                <option value="鸭">鸭 🦆</option>
+                <option value="蔬菜">蔬菜 🥬</option>
+                <option value="干货">干货 🏺</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 font-bold mb-1">烹饪方式</label>
+              <select id="dish-method" class="w-full p-2 border-doodle-sm rounded bg-[#fafaf4] text-vibeTextDark focus:outline-none">
+                <option value="炒">炒 🍳</option>
+                <option value="蒸">蒸 💨</option>
+                <option value="煎">煎 🍳🔥</option>
+                <option value="焗">焗 🥘</option>
+                <option value="炖">炖 🍲</option>
+                <option value="白灼">白灼 🥗</option>
+                <option value="上汤">上汤 🥣</option>
+              </select>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-gray-700 font-bold mb-1">难易程度</label>
+              <select id="dish-difficulty" class="w-full p-2 border-doodle-sm rounded bg-[#fafaf4] text-vibeTextDark focus:outline-none">
+                <option value="1">1星 ⭐</option>
+                <option value="2">2星 ⭐⭐</option>
+                <option value="3">3星 ⭐⭐⭐</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-gray-700 font-bold mb-1">口味</label>
+              <select id="dish-flavor" class="w-full p-2 border-doodle-sm rounded bg-[#fafaf4] text-vibeTextDark focus:outline-none">
+                <option value="开胃">开胃 🤤</option>
+                <option value="适中">适中 😊</option>
+                <option value="清淡">清淡 🥗</option>
+                <option value="油腻">油腻 🍖</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex gap-3 justify-end pt-2">
+            <button type="button" onclick="closeAddDishModal()" class="px-4 py-1.5 bg-gray-100 hover:bg-gray-200 border-doodle-sm shadow-doodle-sm font-cute text-xs text-gray-700 active:scale-95 transition-all cursor-pointer">
+              取消
+            </button>
+            <button type="submit" class="px-4 py-1.5 bg-green-100 hover:bg-green-200 border-doodle-sm shadow-doodle-sm font-cute text-xs text-green-700 active:scale-95 transition-all cursor-pointer">
+              保存
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script>
       // 33 Standard recipes from spreadsheet
       const defaultRecipes = [
@@ -459,6 +546,153 @@
       let activeSubTag = null; // Selected tag on Left Sidebar (e.g. "炒" or "3星")
       let hasUnreadCartItems = false;
       let currentRecommendedDish = null;
+      let isEditMode = false;
+
+      // Toggle edit mode
+      function toggleEditMode() {
+        isEditMode = !isEditMode;
+        const btn = document.getElementById('edit-mode-btn');
+        if (isEditMode) {
+          btn.innerHTML = "完成编辑 ✅";
+          btn.classList.remove('bg-amber-100', 'text-amber-800');
+          btn.classList.add('bg-red-500', 'text-white');
+          showToast("已进入菜品编辑模式，点击红 × 可删除菜品", "info");
+        } else {
+          btn.innerHTML = "编辑菜品 ⚙️";
+          btn.classList.add('bg-amber-100', 'text-amber-800');
+          btn.classList.remove('bg-red-500', 'text-white');
+        }
+        renderApp();
+      }
+
+      // Add Dish Modal Controls
+      function openAddDishModal() {
+        // Exit edit mode if active to prevent UI confusion
+        if (isEditMode) {
+          toggleEditMode();
+        }
+        
+        const modal = document.getElementById('add-dish-modal');
+        const form = document.getElementById('add-dish-form');
+        form.reset();
+        modal.classList.remove('hidden');
+        
+        // Custom scale-in animation
+        const box = modal.querySelector('div');
+        void box.offsetWidth;
+        box.classList.remove('scale-95', 'opacity-0');
+      }
+
+      function closeAddDishModal() {
+        const modal = document.getElementById('add-dish-modal');
+        const box = modal.querySelector('div');
+        box.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 150);
+      }
+
+      function saveNewDish(event) {
+        event.preventDefault();
+        const name = document.getElementById('dish-name').value.trim();
+        const ingredients = document.getElementById('dish-ingredients').value.trim();
+        const garnish = document.getElementById('dish-garnish').value.trim();
+        const type = document.getElementById('dish-type').value;
+        const method = document.getElementById('dish-method').value;
+        const difficulty = document.getElementById('dish-difficulty').value;
+        const flavor = document.getElementById('dish-flavor').value;
+
+        if (!name) {
+          showToast("⚠️ 菜名不能为空！", "error");
+          return;
+        }
+
+        const isDuplicate = recipes.some(r => r.name.toLowerCase() === name.toLowerCase());
+        if (isDuplicate) {
+          showToast("⚠️ 菜谱中已存在同名菜品！", "error");
+          return;
+        }
+
+        const category = (type === "蔬菜") ? "素" : "荤";
+
+        const newDish = {
+          name,
+          ingredients,
+          category,
+          type,
+          method,
+          difficulty,
+          flavor,
+          garnish
+        };
+
+        recipes.push(newDish);
+        localStorage.setItem('garlic_recipes', JSON.stringify(recipes));
+        closeAddDishModal();
+        
+        showToast("新菜品添加成功！", "success");
+        renderApp();
+      }
+
+      // Download CSV Template & Current Recipes
+      function downloadCSVTemplate() {
+        const headers = ["菜名", "食材", "类别", "种类", "烹饪方式", "难易程度", "口味", "配料"];
+        let csvContent = "\ufeff"; // UTF-8 BOM for Excel Chinese compatibility
+        csvContent += headers.join(",") + "\r\n";
+        
+        recipes.forEach(recipe => {
+          const row = [
+            recipe.name || "",
+            recipe.ingredients || "",
+            recipe.category || "",
+            recipe.type || "",
+            recipe.method || "",
+            recipe.difficulty || "",
+            recipe.flavor || "",
+            recipe.garnish || ""
+          ];
+          const escapedRow = row.map(val => {
+            let str = String(val).replace(/"/g, '""');
+            if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+              str = `"${str}"`;
+            }
+            return str;
+          });
+          csvContent += escapedRow.join(",") + "\r\n";
+        });
+
+        try {
+          const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.setAttribute("href", url);
+          link.setAttribute("download", "garlic_recipes.csv");
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          showToast("📥 菜谱数据导出成功！", "success");
+        } catch (e) {
+          console.error(e);
+          showToast("❌ 导出 CSV 失败！", "error");
+        }
+      }
+
+      // Confirm deletion of a dish from recipes list
+      function confirmDeleteDish(recipeName) {
+        showConfirm(`确定要删除“${recipeName}”这道菜吗？`, "🗑️", () => {
+          recipes = recipes.filter(r => r.name !== recipeName);
+          localStorage.setItem('garlic_recipes', JSON.stringify(recipes));
+          showToast(`已成功删除 ${recipeName}！`, "success");
+          
+          // Re-roll recommendation if the recommended dish was deleted
+          if (currentRecommendedDish && currentRecommendedDish.name === recipeName) {
+            shakeRecommendation();
+          }
+          
+          renderApp();
+        });
+      }
 
       // Swipe switching for categories
       let touchStartX = 0;
@@ -716,7 +950,6 @@
         const homeScreen = document.getElementById('home-screen');
         const appScreen = document.getElementById('app-screen');
         
-        // Trigger cinematic scale-zoom & fade-out
         pot.classList.add('transition-all', 'duration-600', 'scale-[2.5]', 'opacity-0');
         homeScreen.classList.add('transition-all', 'duration-600', 'opacity-0');
         
@@ -724,11 +957,9 @@
           homeScreen.classList.add('hidden');
           appScreen.classList.remove('hidden');
           
-          // Reset Home classes
           pot.classList.remove('scale-[2.5]', 'opacity-0');
           homeScreen.classList.remove('opacity-0');
           
-          // Re-render App screen to ensure accurate lists
           renderApp();
         }, 600);
       }
@@ -744,19 +975,14 @@
           appScreen.classList.remove('opacity-0');
           homeScreen.classList.remove('hidden');
           
-          // Refresh recommendation
           shakeRecommendation();
         }, 450);
       }
 
-
-      // --- FILTERING ENGINE (SCREEN 2) ---
       function selectCategory(category) {
         activeCategory = category;
-        // Keep active filters if still applicable, or reset if they make zero items
         renderApp();
         
-        // Auto scroll active category button into view on mobile horizontal navbar
         const activeBtn = document.querySelector(`.category-btn[data-category="${category}"]`);
         if (activeBtn) {
           activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
@@ -764,7 +990,6 @@
       }
 
       function selectDimension(dimension) {
-        // Toggle if clicked already selected one
         if (activeDimension === dimension) {
           activeDimension = null;
           activeSubTag = null;
@@ -772,26 +997,26 @@
           activeDimension = dimension;
           activeSubTag = null;
         }
-        
         renderApp();
       }
 
       function selectSubTag(tag) {
-        // Toggle if clicked already selected one
         if (activeSubTag === tag) {
           activeSubTag = null;
         } else {
           activeSubTag = tag;
         }
-        
         renderApp();
       }
 
       function scrollToTop() {
-        document.getElementById('recipe-list-container').scrollTo({
-          top: 0,
-          behavior: 'smooth'
-        });
+        const el = document.getElementById('recipe-list-container');
+        if (el) {
+          el.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
       }
 
 
@@ -930,11 +1155,28 @@
 
         filtered.forEach(recipe => {
           const card = document.createElement('div');
-          card.className = "bg-white p-3.5 border-doodle-sm shadow-doodle-sm flex justify-between items-center hover:bg-[#fafaf4] transition-all cursor-pointer";
-          card.onclick = () => addToCart(recipe.name);
           
           let starsHtml = '⭐'.repeat(parseInt(recipe.difficulty) || 1);
           let garnishText = recipe.garnish ? `配：${recipe.garnish}` : "基础烹饪";
+
+          let btnHtml = '';
+          if (isEditMode) {
+            card.className = "bg-white p-3.5 border-doodle-sm shadow-doodle-sm flex justify-between items-center transition-all cursor-default";
+            card.onclick = null;
+            btnHtml = `
+              <button class="delete-btn w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 border-2 border-red-400 text-red-600 font-bold flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-all shrink-0 cursor-pointer focus:outline-none text-base">
+                ×
+              </button>
+            `;
+          } else {
+            card.className = "bg-white p-3.5 border-doodle-sm shadow-doodle-sm flex justify-between items-center hover:bg-[#fafaf4] transition-all cursor-pointer";
+            card.onclick = () => addToCart(recipe.name);
+            btnHtml = `
+              <button class="add-btn w-8 h-8 rounded-full bg-vibeBtn hover:bg-[#c3c396] border-2 border-vibeBorder text-vibeTextDark font-bold flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-all shrink-0 cursor-pointer focus:outline-none">
+                ➕
+              </button>
+            `;
+          }
 
           card.innerHTML = `
             <div class="flex-1 pr-2">
@@ -947,16 +1189,22 @@
                 <span class="text-[9px] ml-1 select-none">${starsHtml}</span>
               </div>
             </div>
-            <button class="add-btn w-8 h-8 rounded-full bg-vibeBtn hover:bg-[#c3c396] border-2 border-vibeBorder text-vibeTextDark font-bold flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-all shrink-0 cursor-pointer focus:outline-none">
-              ➕
-            </button>
+            ${btnHtml}
           `;
           
-          const btn = card.querySelector('.add-btn');
-          btn.onclick = (e) => {
-            e.stopPropagation();
-            addToCart(recipe.name);
-          };
+          if (isEditMode) {
+            const deleteBtn = card.querySelector('.delete-btn');
+            deleteBtn.onclick = (e) => {
+              e.stopPropagation();
+              confirmDeleteDish(recipe.name);
+            };
+          } else {
+            const addBtn = card.querySelector('.add-btn');
+            addBtn.onclick = (e) => {
+              e.stopPropagation();
+              addToCart(recipe.name);
+            };
+          }
           
           listContainer.appendChild(card);
         });
