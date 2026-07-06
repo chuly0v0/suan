@@ -607,6 +607,11 @@
           return;
         }
 
+        if (name.startsWith('=')) {
+          showToast("⚠️ 菜名不能以等号(=)开头（不支持Excel公式格式）！", "error");
+          return;
+        }
+
         const isDuplicate = recipes.some(r => r.name.toLowerCase() === name.toLowerCase());
         if (isDuplicate) {
           showToast("⚠️ 菜谱中已存在同名菜品！", "error");
@@ -755,7 +760,12 @@
         const stored = localStorage.getItem('garlic_recipes');
         if (stored) {
           try {
-            recipes = JSON.parse(stored);
+            const parsed = JSON.parse(stored);
+            if (Array.isArray(parsed)) {
+              recipes = parsed.filter(r => r && r.name && typeof r.name === 'string' && !r.name.trim().startsWith('='));
+            } else {
+              recipes = [...defaultRecipes];
+            }
           } catch(e) {
             recipes = [...defaultRecipes];
           }
@@ -889,6 +899,20 @@
           });
           
           if (recipe.name) {
+            // Check if recipe name starts with '=' (Excel Formula)
+            if (recipe.name.startsWith('=')) {
+              const prefix = recipe.garnish ? recipe.garnish : "";
+              const mid = recipe.method ? recipe.method : "";
+              const suffix = recipe.ingredients ? recipe.ingredients : "";
+              const repairedName = (prefix + mid + suffix).trim();
+              
+              if (repairedName && !repairedName.startsWith('=')) {
+                recipe.name = repairedName;
+              } else {
+                // If we can't construct a valid name, skip this formula row
+                continue;
+              }
+            }
             importedRecipes.push(recipe);
           }
         }
@@ -896,11 +920,11 @@
         if (importedRecipes.length > 0) {
           recipes = importedRecipes;
           localStorage.setItem('garlic_recipes', JSON.stringify(recipes));
-          showToast(`🎉 成功导入 ${importedRecipes.length} 条菜谱！`, "success");
+          showToast(`🎉 成功导入 ${importedRecipes.length} 条菜谱并自动清洗公式数据！`, "success");
           shakeRecommendation();
           renderApp();
         } else {
-          showToast("⚠️ 未解析出有效菜品！请检查表头名。", "error");
+          showToast("⚠️ 未解析出有效菜品！（已跳过所有无法修复的公式或空行）", "error");
         }
       }
 
@@ -1022,6 +1046,9 @@
 
       // --- RENDER APP LAYOUTS & FILTERS ---
       function renderApp() {
+        // Dynamically filter out any remaining invalid formula recipes in memory
+        recipes = recipes.filter(r => r && r.name && typeof r.name === 'string' && !r.name.trim().startsWith('='));
+
         // 1. Render Category tabs visual state
         document.querySelectorAll('.category-btn').forEach(btn => {
           const cat = btn.getAttribute('data-category');
