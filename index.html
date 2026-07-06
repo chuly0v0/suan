@@ -460,10 +460,59 @@
       let hasUnreadCartItems = false;
       let currentRecommendedDish = null;
 
+      // Swipe switching for categories
+      let touchStartX = 0;
+      let touchStartY = 0;
+      const categoriesOrder = ["鸡", "猪", "牛", "水产", "鸭", "蔬菜", "干货"];
+
+      function setupSwipeGestures() {
+        const appScreen = document.getElementById('app-screen');
+        if (!appScreen) return;
+
+        appScreen.addEventListener('touchstart', (e) => {
+          touchStartX = e.changedTouches[0].screenX;
+          touchStartY = e.changedTouches[0].screenY;
+        }, { passive: true });
+
+        appScreen.addEventListener('touchend', (e) => {
+          const touchEndX = e.changedTouches[0].screenX;
+          const touchEndY = e.changedTouches[0].screenY;
+          handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+        }, { passive: true });
+      }
+
+      function handleSwipe(startX, startY, endX, endY) {
+        const diffX = endX - startX;
+        const diffY = endY - startY;
+
+        // Ensure it is primarily a horizontal swipe and exceeds threshold (50px)
+        if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+          const currentIndex = categoriesOrder.indexOf(activeCategory);
+          if (currentIndex !== -1) {
+            let nextIndex = currentIndex;
+            if (diffX < 0) {
+              // Left swipe: next category
+              nextIndex = currentIndex + 1;
+              if (nextIndex >= categoriesOrder.length) {
+                nextIndex = 0; // Wrap around
+              }
+            } else {
+              // Right swipe: previous category
+              nextIndex = currentIndex - 1;
+              if (nextIndex < 0) {
+                nextIndex = categoriesOrder.length - 1; // Wrap around
+              }
+            }
+            selectCategory(categoriesOrder[nextIndex]);
+          }
+        }
+      }
+
       // Initialize Database on load
       window.onload = function() {
         initDatabase();
         shakeRecommendation();
+        setupSwipeGestures();
         renderApp();
       };
 
@@ -706,6 +755,12 @@
         activeCategory = category;
         // Keep active filters if still applicable, or reset if they make zero items
         renderApp();
+        
+        // Auto scroll active category button into view on mobile horizontal navbar
+        const activeBtn = document.querySelector(`.category-btn[data-category="${category}"]`);
+        if (activeBtn) {
+          activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
       }
 
       function selectDimension(dimension) {
@@ -875,7 +930,8 @@
 
         filtered.forEach(recipe => {
           const card = document.createElement('div');
-          card.className = "bg-white p-3.5 border-doodle-sm shadow-doodle-sm flex justify-between items-center hover:bg-[#fafaf4] transition-all";
+          card.className = "bg-white p-3.5 border-doodle-sm shadow-doodle-sm flex justify-between items-center hover:bg-[#fafaf4] transition-all cursor-pointer";
+          card.onclick = () => addToCart(recipe.name);
           
           let starsHtml = '⭐'.repeat(parseInt(recipe.difficulty) || 1);
           let garnishText = recipe.garnish ? `配：${recipe.garnish}` : "基础烹饪";
@@ -891,10 +947,17 @@
                 <span class="text-[9px] ml-1 select-none">${starsHtml}</span>
               </div>
             </div>
-            <button onclick="addToCart('${recipe.name}')" class="w-8 h-8 rounded-full bg-vibeBtn hover:bg-[#c3c396] border-2 border-vibeBorder text-vibeTextDark font-bold flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-all shrink-0 cursor-pointer focus:outline-none">
+            <button class="add-btn w-8 h-8 rounded-full bg-vibeBtn hover:bg-[#c3c396] border-2 border-vibeBorder text-vibeTextDark font-bold flex items-center justify-center shadow-sm hover:scale-110 active:scale-95 transition-all shrink-0 cursor-pointer focus:outline-none">
               ➕
             </button>
           `;
+          
+          const btn = card.querySelector('.add-btn');
+          btn.onclick = (e) => {
+            e.stopPropagation();
+            addToCart(recipe.name);
+          };
+          
           listContainer.appendChild(card);
         });
 
